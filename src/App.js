@@ -6,6 +6,7 @@ function App() {
   const [file, setFile] = useState(null);
   const [fields, setFields] = useState([]);
   const [excelData, setExcelData] = useState(null);
+  const [activeMenuItem, setActiveMenuItem] = useState('home');
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -68,27 +69,97 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Автозаполнение шаблонов Word</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-        <h2>Загрузите шаблон Word:</h2>
-          <input type="file" onChange={handleFileChange} accept=".docx" required />
-        </label>
-        <button type="submit">Найти поля (необязательно)</button>
-      </form>
-      <div className="fields">
-        <h2>Найденые поля:</h2>
-        <ul>
-          {fields.map((field, index) => (
-            <li key={index}>{field}</li>
-          ))}
+      <h1>Word Template Fields Extractor</h1>
+      <nav>
+        <ul className="menu">
+          <li
+            className={activeMenuItem === 'home' ? 'active' : ''}
+            onClick={() => setActiveMenuItem('home')}
+          >
+            Главная
+          </li>
+          <li
+            className={activeMenuItem === 'templates' ? 'active' : ''}
+            onClick={() => setActiveMenuItem('templates')}
+          >
+            Шаблоны
+          </li>
+          <li
+            className={activeMenuItem === 'autofill' ? 'active' : ''}
+            onClick={() => setActiveMenuItem('autofill')}
+          >
+            Автозаполнение
+          </li>
         </ul>
-      </div>
-      <div className="excel-upload">
-        <h2>Загрузите данные Excel:</h2>
-        <input type="file" onChange={handleExcelFileChange} accept=".xlsx, .xls" />
-      </div>
-      <button onClick={handleReplace}>Скачать</button>
+      </nav>
+      {activeMenuItem === 'home' && (
+        <div className="welcome-text">
+          <p>
+            Добро пожаловать в приложение для автозаполнения шаблонов Word!
+          </p>
+          <p>
+            Чтобы ознакомиться с примерами шаблонов и научиться их составлять, перейдите во вкладку "Шаблоны".
+          </p>
+          <p>
+            Чтобы начать заполнение, перейдите в раздел "Автозаполнение".
+          </p>
+          <p>
+            Для ознакомления с проектом посетите репозиторий на GitHub: <a href="https://github.com/SeniyP/WebKur">https://github.com/SeniyP/WebKur</a>.
+          </p>
+        </div>
+      )}
+      {activeMenuItem === 'templates' && (
+        <div className="templates-instructions">
+          <h2>Инструкции по составлению шаблонов:</h2>
+          <p>
+            1. Откройте Microsoft Word и создайте новый документ.
+          </p>
+          <p>
+            2. Добавьте необходимые текстовые элементы, которые будут использоваться для автозаполнения.
+          </p>
+          <p>
+            3. Отмечайте каждое поле для автозаполнения в квадратных скобках. Например, **Имя пользователя**.
+          </p>
+          <p>
+            4. Сохраните документ в формате .docx.
+          </p>
+          <p>
+            5. Загрузите ваш шаблон в приложение и нажмите "Извлечь поля".
+          </p>
+          <div className="templates">
+          <h2>Скачать шаблон:</h2>
+          <a href="https://docs.google.com/document/d/1aKtVFpP8ITfHjHO6b1aFKZ4q_E7JQe0v/edit">
+            Скачать TEST.docx
+          </a>
+        </div>
+        </div>
+      )}
+      {activeMenuItem === 'autofill' && (
+        <form onSubmit={handleSubmit}>
+          <label>
+            Загрузите шаблон Word:
+            <input type="file" onChange={handleFileChange} accept=".docx" required />
+          </label>
+          <button type="submit">Извлечь поля</button>
+        </form>
+      )}
+      {activeMenuItem === 'autofill' && (
+        <div className="fields">
+          <h2>Извлеченные поля:</h2>
+          <ul>
+            {fields.map((field, index) => (
+              <li key={index}>{field}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      {activeMenuItem === 'autofill' && (
+        <div className="excel-upload">
+          <h2>Загрузите данные Excel:</h2>
+          <input type="file" onChange={handleExcelFileChange} accept=".xlsx, .xls" />
+        </div>
+      )}
+      {activeMenuItem === 'autofill' && <button onClick={handleReplace}>Заменить поля</button>}
     </div>
   );
 }
